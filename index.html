@@ -1,99 +1,40 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <title>Google 로그인 및 관리자 기능</title>
-  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이메일 로그인 및 잔액 확인</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <button id="loginButton">Google 로그인</button>
-  <div id="userInfo" style="display:none;">
-    <p>아이디: <span id="userEmail"></span></p>
-    <p>내 잔액: <span id="userBalance">0</span></p>
-    <div id="adminPanel" style="display:none;">
-      <h3>관리자 탭</h3>
-      <input type="email" id="targetEmail" placeholder="잔액 추가할 이메일">
-      <input type="number" id="amount" placeholder="추가할 금액">
-      <button id="addBalanceButton">잔액 추가</button>
-    </div>
+  <div class="login-section">
+    <h2>이메일로 로그인</h2>
+    <input type="email" id="email" placeholder="이메일 입력" required><br>
+    <input type="password" id="password" placeholder="비밀번호 입력" required><br>
+    <button id="login-btn">로그인</button>
   </div>
 
-  <script>
-    // Firebase SDK 함수 가져오기 및 초기화 코드
-    import { initializeApp } from "firebase/app";
-    import { getAnalytics } from "firebase/analytics";
+  <div class="user-info" id="user-info" style="display:none;">
+    <h3>안녕하세요, <span id="user-email"></span></h3>
+    <p>잔액: <span id="balance">0</span> 원</p>
 
-    // Firebase 구성
-    const firebaseConfig = {
-      apiKey: "AIzaSyD1Xz0ZYCOsauT2ga1awdSkh87IA8OMRiU",
-      authDomain: "n00001-4ff1e.firebaseapp.com",
-      projectId: "n00001-4ff1e",
-      storageBucket: "n00001-4ff1e.firebasestorage.app",
-      messagingSenderId: "575173293295",
-      appId: "1:575173293295:web:4dbb1e44760dc3bcce171a",
-      measurementId: "G-38JLDN4DJH"
-    };
+    <div id="admin-section" style="display:none;">
+      <h4>관리자 기능</h4>
+      <input type="email" id="target-email" placeholder="잔액 확인할 이메일">
+      <button id="view-balance-btn">잔액 보기</button>
+      <p id="target-balance"></p>
+    </div>
 
-    // Firebase 초기화
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    <button id="logout-btn">로그아웃</button>
+  </div>
 
-    // 나머지 코드 (이전에 제공한 Google 로그인 및 Firestore 코드)
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
 
-    document.getElementById('loginButton').addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).then(result => {
-        const user = result.user;
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userInfo').style.display = 'block';
-
-        if (user.email === "gimeungyeol5@gmail.com") {
-          document.getElementById('adminPanel').style.display = 'block';
-        }
-
-        db.collection('users').doc(user.uid).get().then(doc => {
-          if (doc.exists) {
-            document.getElementById('userBalance').textContent = doc.data().balance;
-          } else {
-            db.collection('users').doc(user.uid).set({ balance: 0 });
-            document.getElementById('userBalance').textContent = 0;
-          }
-        });
-      }).catch(error => {
-        console.error("로그인 오류: ", error);
-      });
-    });
-
-    document.getElementById('addBalanceButton').addEventListener('click', () => {
-      const targetEmail = document.getElementById('targetEmail').value;
-      const amount = parseInt(document.getElementById('amount').value, 10);
-
-      if (targetEmail && !isNaN(amount)) {
-        db.collection('users').where('email', '==', targetEmail).get().then(querySnapshot => {
-          if (!querySnapshot.empty) {
-            querySnapshot.forEach(doc => {
-              db.collection('users').doc(doc.id).update({
-                balance: firebase.firestore.FieldValue.increment(amount)
-              }).then(() => {
-                alert('잔액이 추가되었습니다.');
-              }).catch(error => {
-                console.error("잔액 업데이트 오류: ", error);
-              });
-            });
-          } else {
-            alert('해당 이메일을 가진 사용자가 없습니다.');
-          }
-        }).catch(error => {
-          console.error("쿼리 오류: ", error);
-        });
-      } else {
-        alert('올바른 이메일과 금액을 입력하세요.');
-      }
-    });
-  </script>
+  <!-- Custom Script -->
+  <script src="script.js"></script>
 </body>
 </html>
