@@ -1,37 +1,53 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>구글 로그인 및 잔액 확인</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Google Login</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        #user-info {
+            display: none;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #357AE8;
+        }
+    </style>
 </head>
 <body>
-  <div class="login-section">
-    <h2>구글로 로그인</h2>
-    <button id="google-login-btn">구글로 로그인</button>
-  </div>
+    <h1>Firebase Google 로그인</h1>
 
-  <div class="user-info" id="user-info" style="display:none;">
-    <h3>안녕하세요, <span id="user-email"></span></h3>
-    <p>잔액: <span id="balance">0</span> 원</p>
+    <!-- 구글 로그인 버튼 -->
+    <button id="google-login-btn" onclick="loginWithGoogle()">구글로 로그인</button>
 
-    <div id="admin-section" style="display:none;">
-      <h4>관리자 기능</h4>
-      <input type="email" id="target-email" placeholder="잔액 확인할 이메일">
-      <button id="view-balance-btn">잔액 보기</button>
-      <p id="target-balance"></p>
+    <!-- 로그인 후 사용자 정보 표시 -->
+    <div id="user-info">
+        <p><strong>이메일:</strong> <span id="user-email"></span></p>
+        <p><strong>잔액:</strong> <span id="user-balance">0</span> coins</p>
     </div>
 
-    <button id="logout-btn">로그아웃</button>
-  </div>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
-
-  <!-- Custom Script -->
-  <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
