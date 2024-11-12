@@ -1,6 +1,6 @@
 // Firebase SDK 가져오기
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { getDatabase, ref, get, set } from "firebase/database";
 
 // Firebase 설정
@@ -16,15 +16,17 @@ const firebaseConfig = {
 
 // Firebase 초기화
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);  // Firebase Analytics 추가
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// 로그인 함수
-const loginWithEmailPassword = async (email, password) => {
+// 구글 로그인 함수
+const loginWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    
+    // 사용자 이메일 표시
     document.getElementById("user-email").innerText = user.email;
 
     // 로그인된 사용자의 잔액을 가져와서 표시
@@ -39,30 +41,11 @@ const loginWithEmailPassword = async (email, password) => {
     // 로그인 후 사용자 정보를 보여주기
     document.getElementById("user-info").style.display = "block";
 
-    // 만약 관리자인 "gimeungyeol5@gmail.com"로 로그인했다면, 관리 기능 활성화
+    // 관리자인 "gimeungyeol5@gmail.com"로 로그인했다면 관리 기능 활성화
     if (user.email === "gimeungyeol5@gmail.com") {
       document.getElementById("admin-section").style.display = "block";
     }
 
-  } catch (error) {
-    alert(error.message);
-  }
-};
-
-// 회원가입 함수
-const signupWithEmailPassword = async (email, password) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    // 새로 생성된 사용자에게 초기 잔액 저장 (0 원으로 설정)
-    const balanceRef = ref(db, 'balances/' + user.uid);
-    await set(balanceRef, 0);  // 기본 잔액은 0으로 설정
-
-    alert("회원가입 성공!");
-    // 회원가입 후 로그인 화면으로 전환
-    document.querySelector(".signup-section").style.display = "none";
-    document.querySelector(".login-section").style.display = "block";
   } catch (error) {
     alert(error.message);
   }
@@ -98,30 +81,6 @@ const viewBalance = async () => {
 };
 
 // 이벤트 리스너 설정
-document.getElementById("login-btn").addEventListener("click", () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  loginWithEmailPassword(email, password);
-});
-
-document.getElementById("signup-btn").addEventListener("click", () => {
-  const email = document.getElementById("signup-email").value;
-  const password = document.getElementById("signup-password").value;
-  signupWithEmailPassword(email, password);
-});
-
+document.getElementById("google-login-btn").addEventListener("click", loginWithGoogle);
 document.getElementById("logout-btn").addEventListener("click", logout);
-
 document.getElementById("view-balance-btn").addEventListener("click", viewBalance);
-
-// 회원가입 화면 전환
-document.getElementById("show-signup").addEventListener("click", () => {
-  document.querySelector(".login-section").style.display = "none";
-  document.querySelector(".signup-section").style.display = "block";
-});
-
-// 로그인 화면 전환
-document.getElementById("show-login").addEventListener("click", () => {
-  document.querySelector(".signup-section").style.display = "none";
-  document.querySelector(".login-section").style.display = "block";
-});
