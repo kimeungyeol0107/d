@@ -3,24 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>이메일 로그인 및 잔액 확인</title>
+  <title>구글 로그인 및 잔액 확인</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="login-section">
-    <h2>이메일로 로그인</h2>
-    <input type="email" id="email" placeholder="이메일 입력" required><br>
-    <input type="password" id="password" placeholder="비밀번호 입력" required><br>
-    <button id="login-btn">로그인</button>
-    <p>아직 계정이 없으신가요? <a href="#" id="show-signup">회원가입</a></p>
-  </div>
-
-  <div class="signup-section" style="display:none;">
-    <h2>회원가입</h2>
-    <input type="email" id="signup-email" placeholder="이메일 입력" required><br>
-    <input type="password" id="signup-password" placeholder="비밀번호 입력" required><br>
-    <button id="signup-btn">회원가입</button>
-    <p>이미 계정이 있으신가요? <a href="#" id="show-login">로그인</a></p>
+    <h2>구글로 로그인</h2>
+    <button id="google-login-btn">구글로 로그인</button>
   </div>
 
   <div class="user-info" id="user-info" style="display:none;">
@@ -39,7 +28,6 @@
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
 
